@@ -1,40 +1,13 @@
-# ✨ So you want to run an audit
-
-This `README.md` contains a set of checklists for our audit collaboration. This is your audit repo, which is used for scoping your audit and for providing information to wardens
-
-Some of the checklists in this doc are for our scouts and some of them are for **you as the audit sponsor (⭐️)**.
-
----
-
-# Repo setup
-
-## ⭐️ Sponsor: Add code to this repo
-
-- [ ] Create a PR to this repo with the below changes:
-- [ ] Confirm that this repo is a self-contained repository with working commands that will build (at least) all in-scope contracts, and commands that will run tests producing gas reports for the relevant contracts.
-- [ ] Please have final versions of contracts and documentation added/updated in this repo **no less than 48 business hours prior to audit start time.**
-- [ ] Be prepared for a 🚨code freeze🚨 for the duration of the audit — important because it establishes a level playing field. We want to ensure everyone's looking at the same code, no matter when they look during the audit. (Note: this includes your own repo, since a PR can leak alpha to our wardens!)
-
-## ⭐️ Sponsor: Repo checklist
-
-- [ ] Modify the [Overview](#overview) section of this `README.md` file. Describe how your code is supposed to work with links to any relevant documentation and any other criteria/details that the auditors should keep in mind when reviewing. (Here are two well-constructed examples: [Ajna Protocol](https://github.com/code-423n4/2023-05-ajna) and [Maia DAO Ecosystem](https://github.com/code-423n4/2023-05-maia))
-- [ ] Optional: pre-record a high-level overview of your protocol (not just specific smart contract functions). This saves wardens a lot of time wading through documentation.
-- [ ] Review and confirm the details created by the Scout (technical reviewer) who was assigned to your contest. *Note: any files not listed as "in scope" will be considered out of scope for the purposes of judging, even if the file will be part of the deployed contracts.*  
-
----
-
 # Textile audit details
-- Total Prize Pool: $100000 in USDC
-  - HM awards: up to XXX XXX USDC (Notion: HM (main) pool)
-    - If no valid Highs or Mediums are found, the HM pool is $0 
-  - QA awards: $3300 in USDC
-  - Judge awards: $5000 in USDC
-  - Validator awards: XXX XXX USDC (Notion: Triage fee - final)
+- Total Prize Pool: $100,000 in USDC
+  - HM awards: $88,000 in USDC
+  - QA awards: $3,300 in USDC
+  - Judge awards: $5,000 in USDC
+  - Validator awards: $3.200 in USDC
   - Scout awards: $500 in USDC
-  - (this line can be removed if there is no mitigation) Mitigation Review: XXX XXX USDC
 - [Read our guidelines for more details](https://docs.code4rena.com/roles/wardens)
-- Starts XXX XXX XX 20:00 UTC (ex. `Starts March 22, 2023 20:00 UTC`)
-- Ends XXX XXX XX 20:00 UTC (ex. `Ends March 30, 2023 20:00 UTC`)
+- Starts February 19, 2025 20:00 UTC
+- Ends March 19, 2025 20:00 UTC
 
 **Note re: risk level upgrades/downgrades**
 
@@ -46,16 +19,303 @@ As such, wardens are encouraged to select the appropriate risk level carefully d
 
 ## Automated Findings / Publicly Known Issues
 
-The 4naly3er report can be found [here](https://github.com/code-423n4/2025-02-textile/blob/main/4naly3er-report.md).
-
-
+The 4naly3er report can be found [here](https://github.com/code-423n4/2025-02-3box/blob/main/4naly3er-report.md).
 
 _Note for C4 wardens: Anything included in this `Automated Findings / Publicly Known Issues` section is considered a publicly known issue and is ineligible for awards._
-## 🐺 C4: Begin Gist paste here (and delete this line)
+
+From the sponsors: 
+
+- Gateway manages funds for all registered subnets (cf. “omnibus account”). Funds sit in the subnet actor until the subnet is bootstrapped, at which point the collateral and supply is transferred to the gateway. Gateway will manage the fund and disperse to the subnet upon subnet’s request. This design will cause some security threats as one subnet can potentially impact other subnets. Please check the `Problems` section of the refactoring [proposal](https://github.com/consensus-shipyard/ipc/blob/main/specs/drafts/contract-redesign.md). The mitigation under the current design is for gateways to be single-tenant, i.e. to restrict who can create subnets under it, so all risk is contained under a single owner. In the future, the design will segregate liquidity per subnet into their dedicated actors/contracts.
+- Current topdown checkpointing issues (these are addressed in PRs pending merge, but not yet integrated by Recall):
+    - Entirely reliant on a single RPC endpoint to query and observe the parent chain. We deposit blind trust on a single RPC node for parent network events/states; possibility of attacks. RPCs can malfunction and serve missing or incorrect data. (For the Filecoin L1: Lotus event indices are optional, and Lotus does not reason about data availability. So it happily returns empty events for an unindexed epoch, instead of an error, misleading the caller to think there were truly no events. Ideally would use trustless light clients, but the Filecoin L1 doesn’t support them yet.)
+    1. Dependent on RPC data availability, rendering catch-ups problematic. If the subnet has fallen behind its parent and needs to perform a long-range catch-up, queries may exceed the lookback window of the RPC endpoint (16-24h for popular hosted Filecoin L1 RPC endpoints). Furthermore, queries may slow down as we query historical portions of the parent chain, the deeper the queries go.
+    2. Imported parent data is transient and does not survive restarts. We engage in unnecessary work upon restarts to reload data that IPC had already acquired (and was immutable, to begin with). In case of long-range catch-ups, the relevant chain history may be unfetchable as a result of (2).
+    3. Race conditions during start, potentially deriving in network-wide liveness problems. If Fendermint stops or crashes unexpectedly while processing proposed topdown finality, and we are forced to restart, we will need to fill up our cache before we can validate proposals. A problematic edge case occurs if we had accepted a proposal containing parent finality or prevoted on it just before crashing, as we will enter a crash loop during WAL replay because we will now reject a previously accepted proposal, and this is perceived by CometBFT as a fatal consensus violation from the app. To break this cycle, we will need to clear the local CometBFT state and possibly the WAL.
+    4. Topdown voting covers observed height and block hash, but not imported side effects. Due to problems (1) and (2), various nodes may see different side effects (especially if using different RPCs), causing rejections at consensus time, resulting in chain liveness problems, e.g. A/B split brain scenario leading to cohort A rejecting cohort B’s proposals, and vice versa.
+    5. Lack of fault tolerance preventing self-healing and automatic failure recovery. Topdown components do not backoff nor reset their state machine after repeated failures, causing us to enter infinite loops when things get stuck in a bad state, and requiring manual intervention to recover. To remedy this, we could gracefully degrade and back off, skip proposing parent finality, and optionally reset some state (circuit breaker pattern), if we repeatedly fail to commit top-down finality during a particular height.
+    6. Brittle vote broadcast and tallying mechanisms. Nodes may restart anytime, wiping their state (see problem 3) and appearing to others as if they’re going back when they gossip, which is not tolerated by peers. Similarly, nodes only gossip new parent views but never re-broadcast older pending ones, preventing restarted nodes from learning about intermediate states they could make partial progress towards.
+    7. No notion of a causality. Even though voting for A in a chain A’’←A’←A implicitly votes for A’’, topdown finality does not leverage this fact at all.
+    8. Inefficient parent RPC query patterns, querying individual blocks and events instead of performing range queries when catching up.
+    9. ProcessProposal is non-deterministic, as validators with different views of parent finality (or data availability issues) will reject benevolently.
+- Known bug for mapping subnet genesis validators to the initial Fendermint power table. There is an [issue](https://github.com/consensus-shipyard/ipc/pull/1166) describing the cause and and a hot fix.
+- Bottom-up checkpoints are injected in the child ledger during block proposal (no gas required), and are subsequently signed by a quorum via transactions in the child ledger (requires gas). This means that validators need to monitor their account balance to be able to expend gas for this system operation. While this is not a bug, it is an inconvenience. We are fixing this by making gas charges conditional (exempted in valid system  as well.
+- Individual subnet stalls cause progress stalls for all child subnets, which opens DoS vectors at the weakest parent.
+- A subnet stall causes funds locked on the parent and/or root chains to become inaccessible, but can be recovered through a contract upgrade.
+- When a network does not run a relayer and is unable to confirm its changes to the parent, the parent cannot confirm the validator set changes from the subnet, effectively rendering them ineffective.
+- A subnet in the parent needs to be activated either by setting federated power or assigning minimum collateral; otherwise, it cannot be used yet. This is not a bug, but it can be confusing.
+- Setting a non-standard IPC address in a cross-message might lead to a panic during message parsing in Fendermint.
+- Known open issues regarding transaction acceptance, gossip, and inclusion itself, even in the presence of invalid gas parameters. [Patch is in progress](https://github.com/consensus-shipyard/ipc/pull/1239), but is blocked on some deeper refactors needed.
+
+✅ SCOUTS: Please format the response above 👆 so its not a wall of text and its readable.
+
+# Overview
+
+[ ⭐️ SPONSORS: add info here ]
+
+## Links
+
+- **Previous audits:**  
+  - ✅ SCOUTS: If there are multiple report links, please format them in a list.
+- **Documentation:** https://flat-agustinia-3f3.notion.site/Audit-documentation-Code4rena-17ddfc9427de80a7849fe2144b56dffb?pvs=4
+- **Website:** https://linktr.ee/textileio
+- **X/Twitter:** https://x.com/textileio
+
+---
+
+# Scope
+
+[ ✅ SCOUTS: add scoping and technical details here ]
+
+### Files in scope
+- ✅ This should be completed using the `metrics.md` file
+- ✅ Last row of the table should be Total: SLOC
+- ✅ SCOUTS: Have the sponsor review and and confirm in text the details in the section titled "Scoping Q amp; A"
+
+*For sponsors that don't use the scoping tool: list all files in scope in the table below (along with hyperlinks) -- and feel free to add notes to emphasize areas of focus.*
+
+| Contract | SLOC | Purpose | Libraries used |  
+| ----------- | ----------- | ----------- | ----------- |
+| [contracts/folder/sample.sol](https://github.com/code-423n4/repo-name/blob/contracts/folder/sample.sol) | 123 | This contract does XYZ | [`@openzeppelin/*`](https://openzeppelin.com/contracts/) |
+
+### Files out of scope
+✅ SCOUTS: List files/directories out of scope
+
+## Scoping Q &amp; A
+
+### General questions
+### Are there any ERC20's in scope?: No
+
+✅ SCOUTS: If the answer above 👆 is "Yes", please add the tokens below 👇 to the table. Otherwise, update the column with "None".
 
 
 
 
+### Are there any ERC777's in scope?: 
+
+✅ SCOUTS: If the answer above 👆 is "Yes", please add the tokens below 👇 to the table. Otherwise, update the column with "None".
+
+
+
+### Are there any ERC721's in scope?: No
+
+✅ SCOUTS: If the answer above 👆 is "Yes", please add the tokens below 👇 to the table. Otherwise, update the column with "None".
+
+
+
+### Are there any ERC1155's in scope?: No
+
+✅ SCOUTS: If the answer above 👆 is "Yes", please add the tokens below 👇 to the table. Otherwise, update the column with "None".
+
+
+
+✅ SCOUTS: Once done populating the table below, please remove all the Q/A data above.
+
+| Question                                | Answer                       |
+| --------------------------------------- | ---------------------------- |
+| ERC20 used by the protocol              |       🖊️             |
+| Test coverage                           | ✅ SCOUTS: Please populate this after running the test coverage command                          |
+| ERC721 used  by the protocol            |            🖊️              |
+| ERC777 used by the protocol             |           🖊️                |
+| ERC1155 used by the protocol            |              🖊️            |
+| Chains the protocol will be deployed on | OtherFilecoin  |
+
+### ERC20 token behaviors in scope
+
+| Question                                                                                                                                                   | Answer |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| [Missing return values](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#missing-return-values)                                                      |    |
+| [Fee on transfer](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#fee-on-transfer)                                                                  |   |
+| [Balance changes outside of transfers](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#balance-modifications-outside-of-transfers-rebasingairdrops) |    |
+| [Upgradeability](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#upgradable-tokens)                                                                 |    |
+| [Flash minting](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#flash-mintable-tokens)                                                              |    |
+| [Pausability](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#pausable-tokens)                                                                      |    |
+| [Approval race protections](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#approval-race-protections)                                              |    |
+| [Revert on approval to zero address](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#revert-on-approval-to-zero-address)                            |    |
+| [Revert on zero value approvals](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#revert-on-zero-value-approvals)                                    |    |
+| [Revert on zero value transfers](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#revert-on-zero-value-transfers)                                    |    |
+| [Revert on transfer to the zero address](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#revert-on-transfer-to-the-zero-address)                    |    |
+| [Revert on large approvals and/or transfers](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#revert-on-large-approvals--transfers)                  |    |
+| [Doesn't revert on failure](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#no-revert-on-failure)                                                   |    |
+| [Multiple token addresses](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#revert-on-zero-value-transfers)                                          |    |
+| [Low decimals ( < 6)](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#low-decimals)                                                                 |    |
+| [High decimals ( > 18)](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#high-decimals)                                                              |    |
+| [Blocklists](https://github.com/d-xo/weird-erc20?tab=readme-ov-file#tokens-with-blocklists)                                                                |    |
+
+### External integrations (e.g., Uniswap) behavior in scope:
+
+
+| Question                                                  | Answer |
+| --------------------------------------------------------- | ------ |
+| Enabling/disabling fees (e.g. Blur disables/enables fees) | No   |
+| Pausability (e.g. Uniswap pool gets paused)               |  No   |
+| Upgradeability (e.g. Uniswap gets upgraded)               |   No  |
+
+
+### EIP compliance checklist
+no
+
+✅ SCOUTS: Please format the response above 👆 using the template below👇
+
+| Question                                | Answer                       |
+| --------------------------------------- | ---------------------------- |
+| src/Token.sol                           | ERC20, ERC721                |
+| src/NFT.sol                             | ERC721                       |
+
+
+# Additional context
+
+## Main invariants
+
+- The total circulating supply in the child subnet must be equal to the total funds locked in the gateway for that specific subnet.
+- The fund bridged to the child subnet for an address must be the same to the native token balance of that address in the child subnet blockchain (assuming no other native token transfers).
+- The current membership in the child subnet gateway must be the same to the validators in the cometbft, i.e. public key and power (power scale applied).
+- The active validators in the parent subnet must have the same public key, power (with power scale applied) to the validators in the child subnet after bottom up checkpoint is submitted to the parent subnet.
+- Topdown finality:
+    - The topdown finality block hash in the child subnet must be equal to the parent’s block hash for the same height.
+    - The nonces in cross network messages to be applied in topdown finality must be sequential and no gaps.
+    - The configuration number for validator change request must be sequential and no gaps.
+    - The child subnet’s `appliedTopDownNonce` must be equal the cross network message’s `localNonce`.
+    - The topdown finality’s block height must be larger than that of the previous committed topdown finality’s block height.
+    - The cross network messages and validator changes to be committed from the parent finality must be the same compared to the parent subnet.
+- Bottom up checkpoint:
+    - The block height in the checkpoint submitted must be more than the last submitted bottom up checkpoint height.
+    - The block height in the checkpoint submitted must be less than the last submitted bottom up checkpoint height + bottom up checkpoint period.
+    - The `configurationNumber` in the bottom up checkpoint to be submitted must be within the `startConfigurationNumber`(inclusive) and `nextConfigurationNumber` (exclusive).
+    - The parent subnet’s `appliedBottomUpNonce` must be equal the cross network message’s `localNonce`.
+    - The cross network messages to be committed from the bottom up checkpoint must be the same compared to the child subnet.
+- Cross xnet messages can only by send from contract to contract that implements specific interface
+
+✅ SCOUTS: Please format the response above 👆 so its not a wall of text and its readable.
+
+## Attack ideas (where to focus for bugs)
+**Repo: ipc/contracts**
+
+This repo contains the general IPC related solidity code. These contracts are provided by the IPC framework
+
+**GatewayDiamond.sol**
+
+Implementation of the IPC GatewayActor within the Diamond pattern.
+
+**SubnetActorDiamond.sol**
+
+Reference implementation of an IPC SubnetActor within the Diamond pattern.
+
+**SubnetRegistry.sol**
+
+Registry contract for seamlessly deploying subnet actors.
+
+This is the entrypoint to cross network messaging: https://github.com/consensus-shipyard/ipc/blob/main/contracts/contracts/gateway/GatewayMessengerFacet.sol. The documentation can be found: https://github.com/consensus-shipyard/ipc/blob/main/docs/fendermint/general_cross_messages.md.
+
+**IPC blockchain**
+
+A general description of the IPC framework can be [found here](https://docs.ipc.space/). This section will outline the most important components, what they do, and their priority in the audit.
+
+**Fendermint**
+
+Fendermint is an implementation of IPC as a CometBFT ABCI++ application written in Rust. It leverages the FVM as it’s virtual machine, but has custom logic for verifying transactions. The main differentiator of IPC compared to other blockchain frameworks is the concept of *hierarchical consensus*, which enables an hierarchy of blockchains to be spun up and down dynamically. However, when Recall launches there will only be one level, e.g. *subnet*.
+
+**Key components**
+
+**`ipc/fendermint/vm/topdown`**
+
+Part of the hierarchical network topology, e.g. we attach to Filecoin L1 through the gateway contracts. Please find the high level overview here: https://github.com/consensus-shipyard/ipc/blob/main/specs/topdown.md.
+
+For bottom up checkpointing, please find the documentation here: https://github.com/consensus-shipyard/ipc/blob/main/specs/bottom-up-interaction.md.
+
+**`ipc/fendermint/vm/interpreter`**
+
+How checkpoints are managed and how to make sense of IPC messages
+
+**`ipc/fendermint/actors`**
+
+Contains FVM actors that ship by default in all new deployments of an IPC subnet
+
+**IPC - `ipc/ipc`**
+
+This is the main CLI used to interact with an IPC subnet, providing basic wallet functionality as well as interaction with the parent network. It also includes the provider, which manages the sender's wallet and is responsible for calling contracts or submitting transactions on the parent or subnet.
+
+✅ SCOUTS: Please format the response above 👆 so its not a wall of text and its readable.
+
+## All trusted roles in the protocol
+
+The owner of the gateway can perform contract upgrades without any on-chain governance.
+
+Gateway trusts the subnet actor completely with current design. This means fund withdraw calls are not validated by the gateway and directly dispersed.
+
+Currently, the entire set of subnet validators is fully trusted. There is no collusion check or validator penalty.
+
+For topdown, we entirely reliant on a single RPC endpoint to query and observe the parent chain. We deposit blind trust on a single RPC node for parent network events/states. To reduce the risk, a quorum of validators are required to confirm the observations.
+
+✅ SCOUTS: Please format the response above 👆 using the template below👇
+
+| Role                                | Description                       |
+| --------------------------------------- | ---------------------------- |
+| Owner                          | Has superpowers                |
+| Administrator                             | Can change fees                       |
+
+## Describe any novel or unique curve logic or mathematical models implemented in the contracts:
+
+n/a
+
+✅ SCOUTS: Please format the response above 👆 so its not a wall of text and its readable.
+
+## Running tests
+
+> from github consensus-shipyard/ipc:
+> 
+
+**Building**
+
+```
+# make sure that rust has the wasm32 target
+rustup target add wasm32-unknown-unknown
+
+# add your user to the docker group
+sudo usermod -aG docker $USER && newgrp docker
+
+# clone this repo and build
+git clone https://github.com/consensus-shipyard/ipc.git
+cd ipc
+make
+
+# building will generate the following binaries
+./target/release/ipc-cli --version
+./target/release/fendermint --version
+```
+
+**Run tests**
+
+```
+make test
+```
+
+✅ SCOUTS: Please format the response above 👆 using the template below👇
+
+```bash
+git clone https://github.com/code-423n4/2023-08-arbitrum
+git submodule update --init --recursive
+cd governance
+foundryup
+make install
+make build
+make sc-election-test
+```
+To run code coverage
+```bash
+make coverage
+```
+To run gas benchmarks
+```bash
+make gas
+```
+
+✅ SCOUTS: Add a screenshot of your terminal showing the gas report
+✅ SCOUTS: Add a screenshot of your terminal showing the test coverage
+
+## Miscellaneous
+Employees of Textile and employees' family members are ineligible to participate in this audit.
+
+Code4rena's rules cannot be overridden by the contents of this README. In case of doubt, please check with C4 staff.
 
 # Scope
 
