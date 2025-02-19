@@ -27,6 +27,10 @@ _Note for C4 wardens: Anything included in this `Automated Findings / Publicly K
 
 - Any issues outlined in the light audit are considered out-of-scope for the purposes of this contest.
 
+### IPC Known Issues
+
+- Any issues that are known in the original [IPC repository](https://github.com/consensus-shipyard/ipc/issues) are considered to be known issues in the Recall implementation and are thus ineligible for a reward
+
 ### TODO / FIXME Comments
 
 - Any issue that arises from a documented `TODO` or `FIXME` comment is considered a known issue and is therefore ineligible for a reward
