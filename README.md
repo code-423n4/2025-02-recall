@@ -1,4 +1,4 @@
-# Textile audit details
+# Recall audit details
 - Total Prize Pool: $100,000 in USDC
   - HM awards: $88,000 in USDC
   - QA awards: $3,300 in USDC
@@ -313,7 +313,7 @@ make gas
 ✅ SCOUTS: Add a screenshot of your terminal showing the test coverage
 
 ## Miscellaneous
-Employees of Textile and employees' family members are ineligible to participate in this audit.
+Employees of Recall and employees' family members are ineligible to participate in this audit.
 
 Code4rena's rules cannot be overridden by the contents of this README. In case of doubt, please check with C4 staff.
 
