@@ -186,7 +186,6 @@
 ./fendermint/vm/event/src/lib.rs
 ./fendermint/vm/genesis/src/arb.rs
 ./fendermint/vm/genesis/src/lib.rs
-./fendermint/vm/genesis/tests/golden.rs
 ./fendermint/vm/interpreter/src/arb.rs
 ./fendermint/vm/interpreter/src/bytes.rs
 ./fendermint/vm/interpreter/src/chain.rs
@@ -219,7 +218,6 @@
 ./fendermint/vm/interpreter/src/lib.rs
 ./fendermint/vm/interpreter/src/selector.rs
 ./fendermint/vm/interpreter/src/signed.rs
-./fendermint/vm/interpreter/tests/golden.rs
 ./fendermint/vm/message/src/chain.rs
 ./fendermint/vm/message/src/conv/from_eth.rs
 ./fendermint/vm/message/src/conv/from_fvm.rs
@@ -228,7 +226,6 @@
 ./fendermint/vm/message/src/lib.rs
 ./fendermint/vm/message/src/query.rs
 ./fendermint/vm/message/src/signed.rs
-./fendermint/vm/message/tests/golden.rs
 ./fendermint/vm/resolver/src/ipld.rs
 ./fendermint/vm/resolver/src/lib.rs
 ./fendermint/vm/resolver/src/pool.rs
@@ -241,7 +238,6 @@
 ./fendermint/vm/snapshot/src/manager.rs
 ./fendermint/vm/snapshot/src/manifest.rs
 ./fendermint/vm/snapshot/src/state.rs
-./fendermint/vm/snapshot/tests/golden.rs
 ./fendermint/vm/topdown/src/cache.rs
 ./fendermint/vm/topdown/src/convert.rs
 ./fendermint/vm/topdown/src/error.rs
@@ -256,7 +252,6 @@
 ./fendermint/vm/topdown/src/sync/tendermint.rs
 ./fendermint/vm/topdown/src/toggle.rs
 ./fendermint/vm/topdown/src/voting.rs
-./fendermint/vm/topdown/tests/smt_voting.rs
 ./ipc/api/src/address.rs
 ./ipc/api/src/checkpoint.rs
 ./ipc/api/src/cross.rs
@@ -327,9 +322,7 @@
 ./ipc/provider/src/config/mod.rs
 ./ipc/provider/src/config/serialize.rs
 ./ipc/provider/src/config/subnet.rs
-./ipc/provider/src/config/tests.rs
 ./ipc/provider/src/jsonrpc/mod.rs
-./ipc/provider/src/jsonrpc/tests.rs
 ./ipc/provider/src/lib.rs
 ./ipc/provider/src/lotus/client.rs
 ./ipc/provider/src/lotus/message/chain.rs
@@ -339,7 +332,6 @@
 ./ipc/provider/src/lotus/message/mpool.rs
 ./ipc/provider/src/lotus/message/serialize.rs
 ./ipc/provider/src/lotus/message/state.rs
-./ipc/provider/src/lotus/message/tests.rs
 ./ipc/provider/src/lotus/message/wallet.rs
 ./ipc/provider/src/lotus/mod.rs
 ./ipc/provider/src/manager/evm/gas_estimator_middleware.rs
@@ -384,5 +376,3 @@
 ./ipld/resolver/src/signed_record.rs
 ./ipld/resolver/src/timestamp.rs
 ./ipld/resolver/src/vote_record.rs
-./ipld/resolver/tests/smoke.rs
-./ipld/resolver/tests/store/mod.rs
