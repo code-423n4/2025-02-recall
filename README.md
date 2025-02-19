@@ -96,8 +96,8 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 
 - **Previous audits:** [Light Audit](https://github.com/recallnet/ipc/blob/e35cb08f31d12da586afa64abd9838692c6d5034/audits/ip-audit-prep.md)
 - **Documentation:** https://flat-agustinia-3f3.notion.site/Audit-documentation-Code4rena-17ddfc9427de80a7849fe2144b56dffb?pvs=4
-- **Website:** https://linktr.ee/textileio
-- **X/Twitter:** https://x.com/textileio
+- **Website:** https://recall.network/
+- **X/Twitter:** https://x.com/recallnet
 
 ---
 
@@ -495,7 +495,7 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./ipld/resolver/src/vote_record.rs   | N/A  | ****       | 120   |         | N/A           |
 | ./ipld/resolver/tests/smoke.rs   | N/A  | ****       | 279   |         | N/A           |
 | ./ipld/resolver/tests/store/mod.rs   | N/A  | ****       | 41   |         | N/A           |
-|Total|47841 | | | | | |
+|Total| 61| | 47,988 | | | |
 
 ### Files out of scope
 
