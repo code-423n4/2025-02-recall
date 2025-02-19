@@ -147,3 +147,13 @@
 ./fendermint/testing/src/golden.rs
 ./fendermint/testing/src/lib.rs
 ./fendermint/testing/src/smt.rs
+./fendermint/vm/genesis/tests/golden.rs
+./fendermint/vm/interpreter/tests/golden.rs
+./fendermint/vm/message/tests/golden.rs
+./fendermint/vm/snapshot/tests/golden.rs
+./fendermint/vm/topdown/tests/smt_voting.rs
+./ipc/provider/src/config/tests.rs
+./ipc/provider/src/jsonrpc/tests.rs
+./ipc/provider/src/lotus/message/tests.rs
+./ipld/resolver/tests/smoke.rs
+./ipld/resolver/tests/store/mod.rs

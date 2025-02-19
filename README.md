@@ -299,7 +299,6 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./fendermint/vm/event/src/lib.rs   | N/A  | ****       | 19   |         | N/A           |
 | ./fendermint/vm/genesis/src/arb.rs   | N/A  | ****       | 19   |         | N/A           |
 | ./fendermint/vm/genesis/src/lib.rs   | N/A  | ****       | 245   |         | N/A           |
-| ./fendermint/vm/genesis/tests/golden.rs   | N/A  | ****       | 12   |         | N/A           |
 | ./fendermint/vm/interpreter/src/arb.rs   | N/A  | ****       | 22   |         | N/A           |
 | ./fendermint/vm/interpreter/src/bytes.rs   | N/A  | ****       | 215   |         | N/A           |
 | ./fendermint/vm/interpreter/src/chain.rs   | N/A  | ****       | 445   |         | N/A           |
@@ -332,7 +331,6 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./fendermint/vm/interpreter/src/lib.rs   | N/A  | ****       | 58   |         | N/A           |
 | ./fendermint/vm/interpreter/src/selector.rs   | N/A  | ****       | 32   |         | N/A           |
 | ./fendermint/vm/interpreter/src/signed.rs   | N/A  | ****       | 186   |         | N/A           |
-| ./fendermint/vm/interpreter/tests/golden.rs   | N/A  | ****       | 12   |         | N/A           |
 | ./fendermint/vm/message/src/chain.rs   | N/A  | ****       | 32   |         | N/A           |
 | ./fendermint/vm/message/src/conv/from_eth.rs   | N/A  | ****       | 138   |         | N/A           |
 | ./fendermint/vm/message/src/conv/from_fvm.rs   | N/A  | ****       | 214   |         | N/A           |
@@ -341,7 +339,6 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./fendermint/vm/message/src/lib.rs   | N/A  | ****       | 14   |         | N/A           |
 | ./fendermint/vm/message/src/query.rs   | N/A  | ****       | 105   |         | N/A           |
 | ./fendermint/vm/message/src/signed.rs   | N/A  | ****       | 389   |         | N/A           |
-| ./fendermint/vm/message/tests/golden.rs   | N/A  | ****       | 72   |         | N/A           |
 | ./fendermint/vm/resolver/src/ipld.rs   | N/A  | ****       | 103   |         | N/A           |
 | ./fendermint/vm/resolver/src/lib.rs   | N/A  | ****       | 2   |         | N/A           |
 | ./fendermint/vm/resolver/src/pool.rs   | N/A  | ****       | 211   |         | N/A           |
@@ -354,7 +351,6 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./fendermint/vm/snapshot/src/manager.rs   | N/A  | ****       | 357   |         | N/A           |
 | ./fendermint/vm/snapshot/src/manifest.rs   | N/A  | ****       | 168   |         | N/A           |
 | ./fendermint/vm/snapshot/src/state.rs   | N/A  | ****       | 119   |         | N/A           |
-| ./fendermint/vm/snapshot/tests/golden.rs   | N/A  | ****       | 12   |         | N/A           |
 | ./fendermint/vm/topdown/src/cache.rs   | N/A  | ****       | 224   |         | N/A           |
 | ./fendermint/vm/topdown/src/convert.rs   | N/A  | ****       | 34   |         | N/A           |
 | ./fendermint/vm/topdown/src/error.rs   | N/A  | ****       | 13   |         | N/A           |
@@ -369,7 +365,6 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./fendermint/vm/topdown/src/sync/tendermint.rs   | N/A  | ****       | 36   |         | N/A           |
 | ./fendermint/vm/topdown/src/toggle.rs   | N/A  | ****       | 107   |         | N/A           |
 | ./fendermint/vm/topdown/src/voting.rs   | N/A  | ****       | 322   |         | N/A           |
-| ./fendermint/vm/topdown/tests/smt_voting.rs   | N/A  | ****       | 371   |         | N/A           |
 | ./ipc/api/src/address.rs   | N/A  | ****       | 131   |         | N/A           |
 | ./ipc/api/src/checkpoint.rs   | N/A  | ****       | 147   |         | N/A           |
 | ./ipc/api/src/cross.rs   | N/A  | ****       | 181   |         | N/A           |
@@ -440,9 +435,7 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./ipc/provider/src/config/mod.rs   | N/A  | ****       | 84   |         | N/A           |
 | ./ipc/provider/src/config/serialize.rs   | N/A  | ****       | 117   |         | N/A           |
 | ./ipc/provider/src/config/subnet.rs   | N/A  | ****       | 78   |         | N/A           |
-| ./ipc/provider/src/config/tests.rs   | N/A  | ****       | 52   |         | N/A           |
 | ./ipc/provider/src/jsonrpc/mod.rs   | N/A  | ****       | 159   |         | N/A           |
-| ./ipc/provider/src/jsonrpc/tests.rs   | N/A  | ****       | 45   |         | N/A           |
 | ./ipc/provider/src/lib.rs   | N/A  | ****       | 733   |         | N/A           |
 | ./ipc/provider/src/lotus/client.rs   | N/A  | ****       | 410   |         | N/A           |
 | ./ipc/provider/src/lotus/message/chain.rs   | N/A  | ****       | 44   |         | N/A           |
@@ -452,7 +445,6 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./ipc/provider/src/lotus/message/mpool.rs   | N/A  | ****       | 98   |         | N/A           |
 | ./ipc/provider/src/lotus/message/serialize.rs   | N/A  | ****       | 15   |         | N/A           |
 | ./ipc/provider/src/lotus/message/state.rs   | N/A  | ****       | 59   |         | N/A           |
-| ./ipc/provider/src/lotus/message/tests.rs   | N/A  | ****       | 114   |         | N/A           |
 | ./ipc/provider/src/lotus/message/wallet.rs   | N/A  | ****       | 45   |         | N/A           |
 | ./ipc/provider/src/lotus/mod.rs   | N/A  | ****       | 48   |         | N/A           |
 | ./ipc/provider/src/manager/evm/gas_estimator_middleware.rs   | N/A  | ****       | 126   |         | N/A           |
@@ -497,9 +489,7 @@ Recall leverages the IPC (InterPlanetary Consensus) framework to create an L2 on
 | ./ipld/resolver/src/signed_record.rs   | N/A  | ****       | 83   |         | N/A           |
 | ./ipld/resolver/src/timestamp.rs   | N/A  | ****       | 38   |         | N/A           |
 | ./ipld/resolver/src/vote_record.rs   | N/A  | ****       | 120   |         | N/A           |
-| ./ipld/resolver/tests/smoke.rs   | N/A  | ****       | 279   |         | N/A           |
-| ./ipld/resolver/tests/store/mod.rs   | N/A  | ****       | 41   |         | N/A           |
-|Total| 61| | 47,988 | | | |
+|Total| 51| | 46,978 | | | |
 
 ### Files out of scope
 
