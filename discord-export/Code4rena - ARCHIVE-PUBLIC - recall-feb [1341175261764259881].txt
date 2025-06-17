@@ -1,0 +1,504 @@
+==============================================================
+Guild: Code4rena
+Channel: ARCHIVE-PUBLIC / recall-feb
+==============================================================
+
+[02/17/2025 22:37] thebrittfactor (pinned)
+👋 Hello and welcome to the $100,000 in USDC Recall audit channel!
+
+📆 Audit opens Wednesday, 19 February 2025 20:00 (20:00 UTC) and runs through Wednesday, 19 March 2025 20:00 (20:00 UTC) (28 days).
+
+Please give a warm welcome to the Recall team, particularly @Joel, @njwags, @ukstv, and @avichalp, who will be available for questions either here in the channel or via a PRIVATE thread in the WET timezone (GMT +1). 
+
+🤖 **Documentation bot assistance:** For general questions about the codebase, give our documentation bot a try, by tagging `@Docs Wolf` in any thread (private or public) and asking your question. The bot will make its best attempt to answer based on the codebase and documentation, and link you to relevant resources.  
+
+We'll be posting relevant links, documentation, etc. here, so if you intend to participate in this audit, consider enabling notifications for this channel. 🐺 ⏰
+
+Audit Page: https://github.com/code-423n4/2025-02-recall
+
+{Reactions}
+👋 (3) 
+
+[02/17/2025 22:37] thebrittfactor
+Pinned a message.
+
+
+[02/19/2025 20:04] pfapostol
+Now I understand why there is no more SLOCs in rsvp. Before I saw the number, everything looked much better.
+
+{Reactions}
+💯 (7) 
+
+[02/19/2025 20:06] thebrittfactor
+ℹ️  Noting that DocBot will be available for this audit in the next couple of days. We appreciate your patience!
+
+
+[02/20/2025 13:12] sajeevan_58356
+What changes have been made in the IPC repository compared to _consensus-shipyard/ipc_?
+
+
+[02/20/2025 13:14] samuselderg
+DocBot is now live and ready to answer your questions 🥳
+
+🤖 Documentation bot assistance: For general questions about the codebase, give our documentation bot a try, by tagging @Docs Wolf in any thread (private or public) and asking your question. The bot will make its best attempt to answer based on the codebase and documentation, and link you to relevant resources.
+
+{Reactions}
+👍 (2) thankyou (3) 
+
+[02/20/2025 14:38] joelthors
+This audit is focused on the IPC framework itself, so none. There are a bunch of changes but they are out of scope for this audit.
+
+{Reactions}
+👍 
+
+[02/21/2025 05:32] viraz4331
+how many sloc is it ?
+
+
+[02/21/2025 05:46] pfapostol
+46978
+
+
+[02/21/2025 06:36] vikqaz
+Can anyone please provide the link to public repo? where I can see the code at a glance. I will only join if I feel its suitable for me
+
+
+[02/21/2025 06:37] vikqaz
+In which programming language the codebase is?
+
+
+[02/21/2025 11:05] thetradmod
+https://github.com/code-423n4/2025-02-recall
+
+
+[02/21/2025 11:06] thetradmod
+dailywarden always point towards c4 gh repos, also the gh link is given in the channel's pinned msg as well, hope that helps in the futue 🙂
+
+
+[02/21/2025 11:07] thetradmod
+rust + solidity
+
+
+[02/22/2025 03:11] berndt_
+Hey! What's the status of bottom-up & top-down messaging? Some of that is not fully implemented yet right?
+
+
+[02/22/2025 03:15] berndt_
+Can you clarify what the current state of the implementation is, and where we find the correct specs
+
+{Reactions}
+👀 
+
+[02/26/2025 07:03] berndt_
+Question 2: Do we assume that block_gas_limit will be set to 10 billion for the FVM?
+
+{Reactions}
+🦗 (2) 👀 
+
+[02/27/2025 12:59] kurororushiruf_
+Can anyone help me with the following questions:
+- How exactly cross net messages are being send from L1 contracts to IPC and fendermint? In which program of IPC and from what entrypoints cross chain messages is being received???
+
+
+[02/27/2025 13:07] kurororushiruf_
+It's in TODO format, I guess we have to assume what usually is considered as default block_gas_limit in FVM. 
+
+In cargo and testing files they are taking block_gas_limit as 10 billion for the FVM.
+
+
+[02/27/2025 13:11] kurororushiruf_
+Also is there any resources related to basic schema of IPC, Fendermint and IPLD apart from specs documentation and drafts of IPC's github repo.\
+
+
+[02/28/2025 02:27] berndt_
+That’s something you can figure out from the docs & code. Check out the markdown files in /specs/ for the checkpoint specs.
+
+If you want to play around with checkpoint relaying, run the “materializer” test environment with the layer2 manifest and build the IPC client in /ipc. Get the port numbers with docker ps. Then you can run IPC commands and foundry tests against the full environment.
+
+Bottom up checkpoints are not fully implemented though, they don’t get executed.
+
+{Reactions}
+👍 
+
+[02/28/2025 02:31] berndt_
+The reason I'm asking is to figure out if we should report things like DOS via unbounded loops. Gas is essentially unlimited so I assume that DOS via out-of-gas will **not** be a valid issue?
+
+
+[02/28/2025 09:22] kurororushiruf_
+Nah they will most likely downgrade to QA or invalid it mentioning root cause was in TO DO format.
+
+{Reactions}
+👍 
+
+[03/02/2025 06:12] lord_of_tera
+hey guys am getting this error when i try to compile 
+```
+forge build 
+[⠃] Compiling...2025-03-02T06:10:30.404435Z ERROR foundry_compilers_artifacts_solc::sources: error="Web3/Contest/2025-02-recall/contracts/lib/fevmate/contracts/utils/FilAddress.sol": No such file or directory (os error 2)
+[⠊] Compiling...
+Error: failed to resolve file: "Web3/Contest/2025-02-recall/contracts/lib/fevmate/contracts/utils/FilAddress.sol": No such file or directory (os error 2); check configured remappings
+        --> Web3/Contest/2025-02-recall/contracts/contracts/gateway/GatewayManagerFacet.sol
+        fevmate/contracts/utils/FilAddress.sol
+```
+
+
+[03/02/2025 07:38] lord_of_tera
+what denpendecies do i need to make this project compile
+
+
+[03/04/2025 07:47] bichistriver
+Check the readme.md you will see build instructions for sure. May be delete the repo you downloaded. Clone/Download again. Run the commands they give in the build instructions.
+
+{Reactions}
+👍🏻 
+
+[03/04/2025 18:53] lord_of_tera
+how is the ai used on this platform
+
+
+[03/04/2025 21:28] _hard1k
+`@Docs Wolf`
+
+{Reactions}
+👍🏻 
+
+[03/05/2025 09:24] kurororushiruf_
+Will future integration issues will be accepted related to CometBFT, IPC or Fendermint as nothing was mentioned in README file @Joel @njwags @ukstv @avichalp ??
+
+
+[03/05/2025 12:01] joelthors
+CometBFT is out of scope (as it's not in the code base). IPC and Fendermint are the main things being audited though so yes that will be accepted!
+
+{Reactions}
+👍 (2) 
+
+[03/06/2025 09:09] berndt_
+According to the "known issues" on the contest page subnet actor registration is permissioned under the current design. But it's not permissioned in the code. Will attacks that require a malicious subnet to be registered invalid?
+
+{Attachments}
+Code4rena - ARCHIVE-PUBLIC - recall-feb [1341175261764259881].txt_Files/Screenshot_2568-03-06_at_16.06.43-618CF.png
+
+
+[03/06/2025 09:17] berndt_
+Or should we review this here https://github.com/consensus-shipyard/ipc/blob/main/specs/drafts/contract-redesign.md#proposals
+
+{Embed}
+https://github.com/consensus-shipyard/ipc/blob/main/specs/drafts/contract-redesign.md
+ipc/specs/drafts/contract-redesign.md at main · consensus-shipyard/...
+🌳 Spawn multi-level trees of customized, scalable, EVM-compatible networks with IPC. L2++ powered by FVM, Wasm, libp2p, IPFS/IPLD, and CometBFT. - consensus-shipyard/ipc
+Code4rena - ARCHIVE-PUBLIC - recall-feb [1341175261764259881].txt_Files/ipc-13E3E
+
+
+[03/07/2025 06:08] mylifechangefast.eth_70767
+See br 😅 submit anything since no one is replying
+
+{Reactions}
+👍 
+
+[03/07/2025 14:34] thebrittfactor
+Does this [section](https://github.com/code-423n4/2025-02-recall?tab=readme-ov-file#subnet-interactions) of the readme help answer your question?
+
+
+[03/08/2025 00:42] berndt_
+@thebrittfactor | C4 No, this only covers some DoS attacks
+
+
+[03/08/2025 14:28] kurororushiruf_
+It is permissioned in the codebase too. Check `newSubnetActor()` [fn](https://github.com/code-423n4/2025-02-recall/blob/ab5f90b9b0322016ecce6dd71c528a935544bec5/contracts/contracts/subnetregistry/RegisterSubnetFacet.sol#L25C1-L28C1) in `RegisterSubnetFact.sol`. Do correct me if I am wrong
+
+{Embed}
+https://github.com/code-423n4/2025-02-recall/blob/ab5f90b9b0322016ecce6dd71c528a935544bec5/contracts/contracts/subnetregistry/RegisterSubnetFacet.sol
+2025-02-recall/contracts/contracts/subnetregistry/RegisterSubnetFac...
+Contribute to code-423n4/2025-02-recall development by creating an account on GitHub.
+Code4rena - ARCHIVE-PUBLIC - recall-feb [1341175261764259881].txt_Files/290efe74-0cef-4579-b350-1147258788dc-156AD
+
+
+[03/08/2025 14:32] kurororushiruf_
+Most of the proposals of contract-redesign haven't been implemented in codebase, it would make no sense to review on basis of that...
+
+{Reactions}
+👍 
+
+[03/18/2025 02:30] berndt_
+One more question:
+
+https://github.com/code-423n4/2025-02-recall/blob/ab5f90b9b0322016ecce6dd71c528a935544bec5/contracts/contracts/lib/LibGateway.sol#L414-L418
+
+{Embed}
+https://github.com/code-423n4/2025-02-recall/blob/ab5f90b9b0322016ecce6dd71c528a935544bec5/contracts/contracts/lib/LibGateway.sol
+2025-02-recall/contracts/contracts/lib/LibGateway.sol at ab5f90b9b0...
+Contribute to code-423n4/2025-02-recall development by creating an account on GitHub.
+Code4rena - ARCHIVE-PUBLIC - recall-feb [1341175261764259881].txt_Files/290efe74-0cef-4579-b350-1147258788dc-156AD
+
+
+[03/18/2025 02:31] berndt_
+The comment says "it's ok to revert here, as this is a programming error or a malicious message from validator."
+
+
+[03/18/2025 02:31] berndt_
+Can we all (sponsor and C4) agree here that "a malicious validator can cause checkpoint submission to revert" will not be valid bug report?
+
+@thebrittfactor | C4
+
+{Reactions}
+☝️ 👍 
+
+[03/19/2025 13:17] thebrittfactor
+Since the code calls this out, I would expect that to be acceptable. However, the judge will review/assess further to determine validity of all submissions.
+
+
+[03/19/2025 15:21] irving6969
+I can't submit the issues
+
+
+[03/19/2025 15:21] audinarey
+Anyone tried to access the audits page?
+
+{Attachments}
+Code4rena - ARCHIVE-PUBLIC - recall-feb [1341175261764259881].txt_Files/audit_page_error-688B2
+
+
+[03/19/2025 15:21] irving6969
+my bad it's ok now
+
+{Reactions}
+hi5 
+
+[03/19/2025 15:22] irving6969
+it's showing like that to me too befor
+
+
+[03/19/2025 15:22] audinarey
+I'll try again
+
+
+[03/19/2025 15:29] audinarey
+working now
+
+{Reactions}
+hi5 
+
+[03/19/2025 20:02] C4
+**🚨 AUDIT ALERT**
+
+@🐺Wardens The **Recall** audit is now closed! Huge thanks to everyone who participated 🔍, whether you submitted a finding or not.
+
+What's next: The sponsor team and judge will review the findings over the next couple of weeks.
+
+
+[03/19/2025 21:25] skinneeomeje
+Please is they any way one can see the submissions and judges comments without been a SR
+
+
+[03/20/2025 01:27] berndt_
+Unfortunately not
+
+
+[03/20/2025 04:54] berndt_
+379 total submissions FYI
+
+{Reactions}
+👍 (5) 👀 
+
+[03/21/2025 06:55] kurororushiruf_
+C4 should change this one, atleast keep it transparent on what's happening behind the scenes by keeping findings repo open to all but restrict it from user activity. If C4 doesn't want SRs to spam or manipulate findings like escalations which could diminsh quality of judging, then just allow view access to user specific issues judging verdict.
+
+{Reactions}
+👍 (2) 
+
+[03/21/2025 07:15] mrpotatomagic
+The C4 team is already working on this, coming soon https://discord.com/channels/810916927919620096/810929015509483554/1346114280075952228 👀
+
+{Reactions}
+👀 
+
+[03/21/2025 07:31] skinneeomeje
+Exactly 💯.
+It is quite demoralizing how you get to find out your report has been invalid without even knowing the reason why. At least even if non SRs can't escalate issues, let one know why their findings have been invalidated and at least learn from the findings of others while it's still fresh
+
+{Reactions}
+👍 (3) 
+
+[03/23/2025 09:33] mylifechangefast.eth_70767
+@Berndt any update on judging?
+
+
+[03/24/2025 10:10] berndt_
+It's in triage stage
+
+{Reactions}
+👍 
+
+[03/25/2025 03:24] kelvinsmart
+How do I know when a report is valid or invalid from the UI??
+
+
+[03/29/2025 07:13] 0xpetern
+You won't.
+
+You only get to see the valid report for the contest when they are published after the entire judging is done.
+
+
+[03/29/2025 08:51] cloudellie
+We're working on a big improvement to this - keep an eye on #📢・c4-updates
+
+{Reactions}
+👍 
+
+[03/31/2025 14:17] 0xpetern
+Great Improvement. Well done to the C4 team. The update is a very valuable one.
+
+{Reactions}
+💜 (4) thankyou 
+
+[03/31/2025 18:29] mylifechangefast.eth_70767
+Can't one comment on any findings? @CloudEllie
+
+
+[03/31/2025 18:32] itsmetechjay
+Only SR wardens can comment on findings during the post-judging QA period.
+
+{Reactions}
+👍 (2) 
+
+[04/01/2025 18:13] chalabiu
+Really great job with the UI
+
+
+[04/01/2025 18:13] chalabiu
+i love it
+
+{Reactions}
+👍 (3) 
+
+[04/04/2025 17:08] mylifechangefast.eth_70767
+That doesn't mean we won't still ask why sponsor  review is slow
+
+{Reactions}
+🙏 🥲 (2) 
+
+[04/04/2025 23:19] skinneeomeje
+Massive thanks to the c4 team for the update. This will really be of great help to all new auditors in the space.
+
+
+[04/07/2025 07:38] mylifechangefast.eth_70767
+Wen!
+
+{Reactions}
+😔 (4) 
+
+[04/08/2025 13:12] daniel526
+this has been silent since 24th
+
+
+[04/08/2025 13:55] thebrittfactor
+We've kicked off judging for this audit while the sponsors are working through their review locally. We should have some movement here end of week/early next 🙂
+
+{Reactions}
+💜 (4) 
+
+[04/14/2025 09:30] mylifechangefast.eth_70767
+https://tenor.com/view/reggie-webber-reggie-webber-reggie-waiting-reggie-focus-gif-21280938
+
+{Embed}
+https://tenor.com/view/reggie-webber-reggie-webber-reggie-waiting-reggie-focus-gif-21280938
+Code4rena - ARCHIVE-PUBLIC - recall-feb [1341175261764259881].txt_Files/reggie-webber-reggie-69C1C.png
+
+
+[04/14/2025 12:21] skinneeomeje
+https://tenor.com/view/gjirlfriend-gif-14457952604098199169
+
+{Embed}
+https://tenor.com/view/gjirlfriend-gif-14457952604098199169
+Code4rena - ARCHIVE-PUBLIC - recall-feb [1341175261764259881].txt_Files/gjirlfriend-729B5.png
+
+{Reactions}
+👍 
+
+[04/14/2025 19:07] mylifechangefast.eth_70767
+*Nothing to recall*
+
+
+[05/02/2025 20:37] thebrittfactor
+🤑 🎉  Awards for **Recall**:
+
+$58,807.64 USDC » @sin1st3r__
+$10,408.50 USDC » SBSecurity (@blckhv and @Slavcheww)
+$5,031.10 USDC » NexusAudits (@cheatc0d3 and @zxnnx)
+$4,102.84 USDC » @Berndt
+$1,942.89 USDC » @0xasen
+$1,563.16 USDC » @K42 Ψ
+$1,469.31 USDC » @0xAstronatey
+$1,317.06 USDC » @kodyvim
+$1,156.38 USDC » @Hard1k
+$1,093.60 USDC » @Sparrow
+$960.32 USDC » @hecker
+$605.01 USDC » @newspace
+$605.01 USDC » @Sheep
+$605.01 USDC » @Denight
+$548.37 USDC » @PCProdigy
+$548.37 USDC » @hunter1
+$89.24 USDC » @shaflow2
+$68.65 USDC » @Rorschach
+$68.65 USDC » @Mylifechangefast.eth
+$68.65 USDC » @aldarion
+$68.65 USDC » @0x788s00a
+$68.65 USDC » @Daniel526
+$51.49 USDC » @auditism
+$51.49 USDC » @MSK
+
+🏁 Findings summary
+--------------------------------------
+9 High risk findings
+4 Med risk findings
+1215 wardens participated
+
+Top Hunter: sin1st3r__
+Top Gatherer: sin1st3r__
+Top QA report: K42
+
+Awards will be distributed on Polygon within the next week. Congratulations all!  💸 💸 💸
+
+⚠️ Awardees, be sure to [complete your tax reporting info](https://docs.code4rena.com/awarding/incentive-model-and-awards/awarding-process#tax-information-for-code4rena-contributors-wardens-judges-etc) if you haven't already. This must be completed within 30 days (i.e. before Monday, 02 June 2025) to receive your award distribution for this audit.
+
+{Reactions}
+🚀 (7) ✅ (3) 🔥 (5) 🫡 (4) 
+
+[05/02/2025 22:17] 0xstalin
+@sin1st3r__ made it’s come back 👌
+Congrats champ 🫡
+
+{Reactions}
+❤️ 
+
+[05/03/2025 05:19] _3doc_
+And what a comeback 👏
+
+{Reactions}
+❤️ (2) 💯 (2) 
+
+[05/03/2025 09:59] mylifechangefast.eth_70767
+Hmm... Explain
+
+
+[05/03/2025 17:29] tobi0x18
+great result
+
+
+[05/08/2025 19:33] 0xastronatey
+@thebrittfactor | C4 can you confirm if this is still being sent out this week?
+
+
+[05/08/2025 19:36] thebrittfactor
+I've flagged for our payments team. Keep an eye out for a notification in #📢・c4-updates when the first batch is sent.
+
+{Reactions}
+👍 (2) 
+
+[06/02/2025 21:30] C4
+ℹ️ This channel is pending archive.   As a result, any private threads will be permanently deleted 06/11/2025 21:13. Please make sure to grab anything you might need before then.
+
+
+==============================================================
+Exported 80 message(s)
+==============================================================
